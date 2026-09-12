@@ -1,0 +1,27 @@
+---
+- name: Configure Database Server
+  hosts: database
+  become: true
+
+  tasks:
+    - name: Install MySQL
+      apt:
+        name:
+          - mysql-server
+          - python3-pymysql
+        state: present
+        update_cache: true
+
+    - name: Start MySQL
+      systemd:
+        name: mysql
+        state: started
+        enabled: true
+
+    - name: Verify MySQL
+      command: mysql --version
+      register: mysql_version
+
+    - name: Display MySQL version
+      debug:
+        var: mysql_version.stdout

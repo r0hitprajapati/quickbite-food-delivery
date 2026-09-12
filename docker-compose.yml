@@ -1,0 +1,40 @@
+services:
+  frontend:
+    build: ./app/frontend
+    container_name: quickbite-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - quickbite-network
+
+  backend:
+    build: ./app/backend
+    container_name: quickbite-backend
+    expose:
+      - "5000"
+    restart: unless-stopped
+    networks:
+      - quickbite-network
+
+  database:
+    build: ./app/database
+    container_name: quickbite-database
+    environment:
+      MYSQL_ROOT_PASSWORD: quickbite_root
+      MYSQL_DATABASE: quickbite
+      MYSQL_USER: quickbite
+      MYSQL_PASSWORD: quickbite_password
+    volumes:
+      - quickbite-db-data:/var/lib/mysql
+    restart: unless-stopped
+    networks:
+      - quickbite-network
+
+networks:
+  quickbite-network:
+
+volumes:
+  quickbite-db-data:
